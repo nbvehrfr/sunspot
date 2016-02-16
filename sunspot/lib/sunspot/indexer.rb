@@ -102,7 +102,7 @@ module Sunspot
     # Convert documents into hash of indexed properties
     #
     def prepare_full_update(model)
-      document = document_for(model.class, model.id)
+      document = document_for(model)
       setup = setup_for_object(model)
       if boost = setup.document_boost_for(model)
         document.attrs[:boost] = boost
@@ -140,11 +140,11 @@ module Sunspot
     # This method constructs the document hash containing those key-value
     # pairs.
     #
-    def document_for(clazz, id)
-      if Adapters::InstanceAdapter.for(clazz)
+    def document_for(model, id = nil)
+      if Adapters::InstanceAdapter.for(model.class)
         RSolr::Xml::Document.new(
-            id: Adapters::InstanceAdapter.index_id_for(clazz.name, id),
-            type: Util.superclasses_for(clazz).map(&:name)
+            id: Adapters::InstanceAdapter.adapt(model).index_id,
+            type: Util.superclasses_for(model.class).map(&:name)
         )
       end
     end
