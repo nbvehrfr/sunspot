@@ -1,7 +1,7 @@
 # Sunspot
 
 [![Gem Version](https://badge.fury.io/rb/sunspot.png)](http://badge.fury.io/rb/sunspot)
-[![Build Status](https://secure.travis-ci.org/sunspot/sunspot.png)](http://travis-ci.org/sunspot/sunspot)
+[![Build Status](https://secure.travis-ci.org/sunspot/sunspot.png?branch=master)](http://travis-ci.org/sunspot/sunspot)
 
 Sunspot is a Ruby library for expressive, powerful interaction with the Solr
 search engine. Sunspot is built on top of the RSolr library, which
@@ -777,7 +777,7 @@ end
 
 PhotoContainer.search do
   with(:caption, 'blah')
-  with(:photos_created).between(Date.new(2011,3,1), Date.new(2011,4,1))
+  with(:photos_created).between(Date.new(2011,3,1)..Date.new(2011,4,1))
   
   fulltext("keywords", :fields => [:name, :description])
 end
@@ -786,7 +786,7 @@ end
 
 PhotoContainer.search do
   with(:caption, 'blah')
-  with(:photos_created).between(Date.new(2011,3,1), Date.new(2011,4,1))
+  with(:photos_created).between(Date.new(2011,3,1)..Date.new(2011,4,1))
   
   any do
     fulltext("keyword1", :fields => :name)
@@ -1215,6 +1215,12 @@ environment (such as sidekiq), you should configure Sunspot to use the
 
 ```ruby
 Sunspot.session = Sunspot::SessionProxy::ThreadLocalSessionProxy.new
+```
+
+Within a Rails app, to ensure your `config/sunspot.yml` settings are properly setup in this session you can use  [Sunspot::Rails.build_session](http://sunspot.github.io/sunspot/docs/Sunspot/Rails.html#build_session-class_method) to mirror the normal Sunspot setup process:
+```ruby
+  session = Sunspot::Rails.build_session  Sunspot::Rails::Configuration.new
+  Sunspot.session = session
 ```
 
 ## Manually Adjusting Solr Parameters
